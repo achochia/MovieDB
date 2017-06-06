@@ -1,6 +1,7 @@
 package alex.myapplication;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -61,12 +62,14 @@ public class MovieListFragment extends ListFragment {
     }
 
     @Override
-    public void onAttach(Activity activity)
+    public void onAttach(Context context)
     {
-        super.onAttach(activity);
+        super.onAttach(context);
 
-        // No need to check if activity does implement this interface
-        mCallback = (OnMovieSelectedListener) activity;
+        if(context instanceof Activity)
+            mCallback = (OnMovieSelectedListener) context;
+        else
+            throw new RuntimeException("OnMovieSelectedListener is not implemented in " + context.getClass());
     }
 
     @Override
@@ -110,14 +113,11 @@ public class MovieListFragment extends ListFragment {
 
     class Movies
     {
-        int page;
-        int total_results;
-        int total_pages;
         Movie[] results;
 
         private List<String> getNames()
         {
-            List<String> retVal = new ArrayList<String>();
+            List<String> retVal = new ArrayList<>();
             for(Movie movie : results)
             {
                 retVal.add(movie.title);
